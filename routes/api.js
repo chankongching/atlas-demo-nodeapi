@@ -1,11 +1,12 @@
 var express = require('express');
 var router = express.Router();
 const { MongoClient } = require('mongodb');
-
+var categoryMapData = require('./data');
+let categoryMap = new Map(categoryMapData.categoryMap);
 const url = 'mongodb://root:password@18.162.71.8:27017/';
 
 /* GET API listing. */
-router.get('/', function(req, res, next) {
+router.get('/aml', function(req, res, next) {
   MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
     if (err) throw err;
     console.log('connect MongoDB success!')
@@ -48,17 +49,93 @@ function mergeData({ data, score, name }, res) {
     totalfees: data[0].totalfees,
     transfers: data[0].transfers,
     withdraws: data[0].withdraws,
-    pie_data: { in: [], out: data[0].output, }
+    pie_data: { inList: [], outList: data[0].output, inCategory: {}, outCategory: {} }
   };
-  newData.pie_data.in = JSON.parse(JSON.stringify(data[0].input[data[0].input.length - 1]));
-  newData.pie_data.in.splice(0, 4); 
-  newData.pie_data.out.splice(0, 4); 
-  newData.pie_data.in = newData.pie_data.in.map((item, index, arr) => {
-    return { value: item, name: name[0].entities[index], score: score[0].score[index] }
+  newData.pie_data.inList = JSON.parse(JSON.stringify(data[0].input[data[0].input.length - 1]));
+  newData.pie_data.inList.splice(0, 4); 
+  newData.pie_data.outList.splice(0, 4); 
+  newData.pie_data.inList = newData.pie_data.inList.map((item, index, arr) => {
+    let newItem = { value: item, name: name[0].entities[index], score: score[0].score[index] };
+    
+    if (categoryMap.has(newItem.name)) {
+      let name = categoryMap.get(newItem.name);
+      if (newData.pie_data.inCategory[name]) {
+        newData.pie_data.inCategory[name].push(newItem);
+      } else {
+        newData.pie_data.inCategory[name] = [];
+        newData.pie_data.inCategory[name].push(newItem);
+      }
+    } else {
+      if (newData.pie_data.inCategory['other']) {
+        newData.pie_data.inCategory['other'].push(newItem);
+      } else {
+        newData.pie_data.inCategory['other'] = [];
+        newData.pie_data.inCategory['other'].push(newItem);
+      }
+    }
+    
+    return newItem
   });
-  newData.pie_data.out = newData.pie_data.out.map((item, index, arr) => {
-    return { value: item, name: name[0].entities[index], score: score[0].score[index] }
+  newData.pie_data.outList = newData.pie_data.outList.map((item, index, arr) => {
+    let newItem = { value: item, name: name[0].entities[index], score: score[0].score[index] };
+    
+    if (categoryMap.has(newItem.name)) {
+      let name = categoryMap.get(newItem.name);
+      if (newData.pie_data.outCategory[name]) {
+        newData.pie_data.outCategory[name].push(newItem);
+      } else {
+        newData.pie_data.outCategory[name] = [];
+        newData.pie_data.outCategory[name].push(newItem);
+      }
+    } else {
+      if (newData.pie_data.outCategory['other']) {
+        newData.pie_data.outCategory['other'].push(newItem);
+      } else {
+        newData.pie_data.outCategory['other'] = [];
+        newData.pie_data.outCategory['other'].push(newItem);
+      }
+    }
+    
+    return newItem
   });
+  newData.pie_data.pieInData = [];
+  newData.pie_data.pieOutData = [];
+  for(let key in newData.pie_data.inCategory) {
+    let num = 0;
+    newData.pie_data.inCategory[key].forEach(element => {
+      num += element.value;
+    });
+    newData.pie_data.pieInData.push({
+      name: key,
+      value: num
+    })
+  }
+  for(let key in newData.pie_data.outCategory) {
+    let num = 0;
+    newData.pie_data.outCategory[key].forEach(element => {
+      num += element.value;
+    });
+    newData.pie_data.pieOutData.push({
+      name: key,
+      value: num
+    })
+  }
+
+  // let historyXAxis = [];
+  // let historyData = [];
+
+  // for (let i = 0; i < newData.input.length; i++) {
+  //   let t = 0;
+  //   const element = newData.input[i];
+  //   for (t = 0; t < element.length; t++) {
+  //     historyData[t] = [];
+  //     historyData[t].push(t);
+  //   }
+    
+  // }
+  // newData.historyXAxis = historyXAxis;
+  // newData.historyData = historyData;
+
   console.log(newData);
   res.send(newData);
 }

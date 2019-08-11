@@ -121,20 +121,30 @@ function mergeData({ data, score, name }, res) {
     })
   }
 
-  // let historyXAxis = [];
-  // let historyData = [];
-
-  // for (let i = 0; i < newData.input.length; i++) {
-  //   let t = 0;
-  //   const element = newData.input[i];
-  //   for (t = 0; t < element.length; t++) {
-  //     historyData[t] = [];
-  //     historyData[t].push(t);
-  //   }
-    
-  // }
-  // newData.historyXAxis = historyXAxis;
-  // newData.historyData = historyData;
+  let historyXAxis = [];
+  let historyData = [];
+  for (let x = 0; x < data[0].input.length; x++) {
+    historyXAxis.push(data[0].input[x][1])
+  }
+  let newInput = JSON.parse(JSON.stringify(data[0].input));
+  // newInput.splice(0, 4)
+  for (let i = 0; i < newInput[0].length; i++) {
+    let arr = [];
+    for (let index = 0; index < newInput.length; index++) {
+      arr.push(newInput[index][i]);
+    }
+    historyData.push({
+      name: name[0].entities[i - 4],
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      data: arr
+    });
+  }
+  historyData.splice(0, 4)
+  // console.log(historyData);
+  newData.historyXAxis = historyXAxis;
+  newData.historyData = historyData;
 
   console.log(newData);
   res.send(newData);

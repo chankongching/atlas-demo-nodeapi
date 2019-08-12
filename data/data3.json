@@ -1,5 +1,5 @@
 {
-    "_id" : "5d41344ce86e60067efdb210",
+    "_id" : "5d41344ce8df60067efdb333",
     "address" : "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF",
     "description" : "bitfinex-coldwallet",
     "no_of_wallets" : "1",
@@ -8,11 +8,11 @@
     "received" : 79957.20036267,
     "totalfees" : 0,
     "transfers" : 294,
-    "withdraws" : 474,
-    "deposits" : 620,
-    "addresses" : 552,
-    "risk_score_in" : 65,
-    "risk_score_out" : 0,
+    "withdraws" : 3537,
+    "deposits" : 34234,
+    "addresses" : 364,
+    "risk_score_in" : 91,
+    "risk_score_out" : 79,
     "input" : [ 
         [ 
             "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF", 

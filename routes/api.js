@@ -223,8 +223,8 @@ router.get('/category-list' , (req , res , next) => {
             entity: entity
           };
           data.forEach(item => {
-            // if (entity === item.description) {
-            if (entity === 'AbraxasMarket') {
+            if (entity === item.description) {
+            // if (entity === 'AbraxasMarket') {
               newVal.id = item._id;
               newVal.no_of_wallets = item.no_of_wallets;
               newVal.address = item.address;

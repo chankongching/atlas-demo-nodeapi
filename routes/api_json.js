@@ -210,7 +210,7 @@ router.get('/list' , (req , res , next) => {
   let list = []
   data.forEach((record) => {
     list.push({
-      name: record.description,
+      name: record.address,
       id: record._id,
       no_of_wallets: record.no_of_wallets
     })
@@ -268,6 +268,7 @@ router.get('/category-list' , (req , res , next) => {
           entity: entity
         };
         data.forEach(item => {
+          console.log(item.address);
           if (entity === item.address) {
           // if (entity === 'AbraxasMarket') {
             newVal.id = item._id;

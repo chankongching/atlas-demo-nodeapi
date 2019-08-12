@@ -38,14 +38,14 @@ const datas_id = {
 }
 
 const datas_name = {
-  "Independent Wallet": json1,
-  "Exchange Wallet": json2,
-  "bitfinex-coldwallet": json3,
-  "Exchange": json4,
-  "Exchange": json5,
-  "Darknet Market": json6,
-  "Exchange" : json7,
-  "Exchange" : json8
+  "1133biLvFq3b9qSsHpAA9M15vhJYvw3iND": json1,
+  "112xfbAbdKfyEnwZEv13JU6ibEHpJqZ3rB": json2,
+  "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF": json3,
+  "Huobi.com": json4,
+  "OKCoin.com": json5,
+  "AbraxasMarket": json6,
+  "BTC-e.com" : json7,
+  "Kraken.com" : json8
 }
 
 const datas_array_list = [json1, json2, json3, json4, json5, json6, json7, json8];

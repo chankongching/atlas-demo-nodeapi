@@ -186,4 +186,56 @@ router.post('/record' , (req , res , next) => {
     });
   });
 })
+router.get('/category-list' , (req , res , next) => {
+  MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
+    if (err) throw err;
+    const dbo = db.db('frontend');
+    dbo.collection('data').find().toArray((error, data) => {
+      if (error) throw err;
+      let list = []
+      let categoryList = {};
+      for (let item of categoryMap.entries()) {
+        if (Object.prototype.toString.call(categoryList[item[1]]) == '[object Array]') {
+          categoryList[item[1]].push(item[0]);
+        } else {
+          categoryList[item[1]] = [];
+          categoryList[item[1]].push(item[0]);
+        }
+      }
+      
+      let categoryArray = [];
+      for (const key in categoryList) {
+        categoryArray.push({
+          name: key,
+          value: categoryList[key]
+        })
+      }
+
+      categoryArray.forEach(category => {
+        category.value = category.value.map(entity => {
+          let newVal = {
+            entity: entity
+          };
+          data.forEach(item => {
+            // if (entity === item.description) {
+            if (entity === 'AbraxasMarket') {
+              newVal.id = item._id;
+              newVal.no_of_wallets = item.no_of_wallets;
+              newVal.address = item.address;
+            }
+          })
+
+          return newVal;
+        })
+
+
+
+
+      })
+
+      res.send(categoryArray);
+      // res.json(list)
+    });
+  });
+})
 module.exports = router;

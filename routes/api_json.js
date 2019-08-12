@@ -5,6 +5,65 @@ var categoryMapData = require('./data');
 let categoryMap = new Map(categoryMapData.categoryMap);
 const url = 'mongodb://root:password@18.162.71.8:27017/';
 
+const colors = [
+  {
+    name: "DEX",
+    color: "#A7C4EA"
+  },
+  {
+    name: "scam",
+    color: "#D6AAAA"
+  },
+  {
+    name: "stolen funds",
+    color: "#107F27"
+  },
+  {
+    name: "high risk exchange",
+    color: "#D96C5F"
+  },
+  {
+    name: "darknet market",
+    color: "#727580"
+  },
+  {
+    name: "ransomware",
+    color: "#54BDB6"
+  },
+  {
+    name: "exchange",
+    color: "#1e2fd7"
+  },
+  {
+    name: "mixer",
+    color: "#FFC7A7"
+  },
+  {
+    name: "gambling",
+    color: "#A5A550"
+  },
+  {
+    name: "hosted wallet",
+    color: "#F48C51"
+  },
+  {
+    name: "merchant services",
+    color: "#F4C355"
+  },
+  {
+    name: "mining pool",
+    color: "#ABD194"
+  },
+  {
+    name: "other",
+    color: "#A6A8AA"
+  },
+  {
+    name: "unknown",
+    color: "#D2D4D4"
+  }
+]
+
 const json1 = require('../data/data1.json');
 const json2 = require('../data/data2.json');
 const json3 = require('../data/data3.json');
@@ -188,11 +247,21 @@ function mergeData({ data, score, name }, res) {
     for (let index = 0; index < newInput.length; index++) {
       arr.push(newInput[index][i]);
     }
+    let categoryName = categoryMap.get(name[0].entities[i - 4])
+    let color = '';
+    colors.forEach(currentColor => {
+      if (String(categoryName).toLowerCase() == currentColor.name.toLowerCase()) {
+        color = currentColor.color;
+      }
+    });
     historyData.push({
       name: name[0].entities[i - 4],
       type: 'line',
       stack: 'Total',
       areaStyle: {},
+      lineStyle: {
+        color: color
+      },
       data: arr
     });
   }

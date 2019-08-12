@@ -5,20 +5,60 @@ var categoryMapData = require('./data');
 let categoryMap = new Map(categoryMapData.categoryMap);
 const url = 'mongodb://root:password@18.162.71.8:27017/';
 
+const json1 = require('../data/data1.json');
+const json2 = require('../data/data2.json');
+const json3 = require('../data/data3.json');
+const json4 = require('../data/data4.json');
+const json5 = require('../data/data5.json');
+const json6 = require('../data/data6.json');
+
+const datas_address = {
+  "1133biLvFq3b9qSsHpAA9M15vhJYvw3iND": json1,
+  "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF": json2,
+  "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF": json3,
+  "1133biLvFq3b9qSsHpAA9M15vhJYvw3iND": json4,
+  "112xfbAbdKfyEnwZEv13JU6ibEHpJqZ3rB": json5,
+  "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF": json6
+}
+
+const datas_id = {
+  "5d41344ce86e60067efdb1d7": json1,
+  "5d41344ce86e60067efdb110": json2,
+  "5d41344ce86e60067efdb210": json3,
+  "5d41344ce8df60067efdb550": json4,
+  "5d41344ce8df60067efdb660": json5,
+  "5d41344ce8df60067efdb666": json6
+}
+
+const datas_name = {
+  "Independent Wallet": json1,
+  "Exchange Wallet": json2,
+  "bitfinex-coldwallet": json3,
+  "huobi-coldwallet": json4,
+  "okcoin-coldwallet": json5,
+  "abraxas-coldwallet": json6
+}
+
+const datas_array_list = [json1, json2, json3, json4, json5, json6];
 
 /* GET API listing. */
 router.get('/aml', function (req, res, next) {
   MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
     if (err) throw err;
-    console.log('connect MongoDB success!')
     const dbo = db.db('frontend');
     // const whereStr = { name: '' }; // 查询条件
     const whereStr = {};
-    dbo.collection('data').find(whereStr).toArray((error, data) => {
-      // console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-      // console.log(data);
-      console.log('collection data tabel!');
-      if (error) throw err;
+    // dbo.collection('data').find(whereStr).toArray((error, data) => {
+    //   // console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    //   // console.log(data);
+    //   console.log('collection data tabel!');
+    //   if (error) throw err;
+    let data  = datas_name['Independent Wallet'];
+    // console.log('====================================')
+    // console.log(data);
+    if (!data) {
+      return res.send({status: 'Waning', message: '搜索结果为空'});
+    }
       dbo.collection('score').find(whereStr).toArray((error, score) => {
         console.log('collection score tabel!');
         if (error) throw err;
@@ -29,12 +69,12 @@ router.get('/aml', function (req, res, next) {
           db.close();
         });
       });
-    });
+    // });
   });
 });
 
 function mergeData({ data, score, name }, res) {
-  
+  data = [data];
   let newData = {
     address: data[0].address,
     address_score_month: data[0].address_score_month,
@@ -157,91 +197,83 @@ function mergeData({ data, score, name }, res) {
   res.send(newData);
 }
 router.get('/list' , (req , res , next) => {
-  MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
-    if (err) throw err;
-    const dbo = db.db('frontend');
-    dbo.collection('data').find().toArray((error, data) => {
-      if (error) throw err;
-      let list = []
-      data.forEach((record) => {
-        list.push({
-          name: record.description,
-          id: record._id,
-          no_of_wallets: record.no_of_wallets
-        })
-      })
-      res.json(list)
-    });
-  });
+  const data = datas_array_list;
+  let list = []
+  data.forEach((record) => {
+    list.push({
+      name: record.description,
+      id: record._id,
+      no_of_wallets: record.no_of_wallets
+    })
+  })
+  res.json(list)
 })
 router.post('/record' , (req , res , next) => {
+  let data  = datas_name[req.body.name];
+  if (!data) {
+    return res.send({status: 'Waning', message: '搜索结果为空'});
+  }
+
   MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
     if (err) throw err;
     const dbo = db.db('frontend');
-    dbo.collection('data').find({ description:req.body.name }).toArray((error, data) => {
+    dbo.collection('score').find().toArray((error, score) => {
       if (error) throw err;
-      if (data.length <= 0) {
-        return res.send({status: 'Waning', message: '搜索结果为空'});
-      }
-      dbo.collection('score').find().toArray((error, score) => {
+      dbo.collection('name').find().toArray((error, name) => {
         if (error) throw err;
-        dbo.collection('name').find().toArray((error, name) => {
-          if (error) throw err;
-          mergeData({ data, score, name }, res);
-          db.close();
-        });
+        mergeData({ data, score, name }, res);
+        db.close();
       });
     });
   });
 })
 router.get('/category-list' , (req , res , next) => {
-  MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
-    if (err) throw err;
-    const dbo = db.db('frontend');
-    dbo.collection('data').find().toArray((error, data) => {
-      if (error) throw err;
-      let list = []
-      let categoryList = {};
-      for (let item of categoryMap.entries()) {
-        if (Object.prototype.toString.call(categoryList[item[1]]) == '[object Array]') {
-          categoryList[item[1]].push(item[0]);
-        } else {
-          categoryList[item[1]] = [];
-          categoryList[item[1]].push(item[0]);
-        }
+  let data  = datas_array_list;
+  if (!data) {
+    return res.send({status: 'Waning', message: '搜索结果为空'});
+  }
+  // dbo.collection('data').find().toArray((error, data) => {
+    // if (error) throw err;
+    let list = []
+    let categoryList = {};
+    for (let item of categoryMap.entries()) {
+      if (Object.prototype.toString.call(categoryList[item[1]]) == '[object Array]') {
+        categoryList[item[1]].push(item[0]);
+      } else {
+        categoryList[item[1]] = [];
+        categoryList[item[1]].push(item[0]);
       }
-      
-      let categoryArray = [];
-      for (const key in categoryList) {
-        categoryArray.push({
-          name: key,
-          value: categoryList[key]
-        })
-      }
+    }
+    
+    let categoryArray = [];
+    for (const key in categoryList) {
+      categoryArray.push({
+        name: key,
+        value: categoryList[key]
+      })
+    }
 
-      categoryArray.forEach(category => {
-        category.value = category.value.map(entity => {
-          let newVal = {
-            entity: entity
-          };
-          data.forEach(item => {
-            if (entity === item.description) {
-            // if (entity === 'AbraxasMarket') {
-              newVal.id = item._id;
-              newVal.no_of_wallets = item.no_of_wallets;
-              newVal.address = item.address;
-            }
-          })
-
-          return newVal;
+    categoryArray.forEach(category => {
+      category.value = category.value.map(entity => {
+        let newVal = {
+          entity: entity
+        };
+        data.forEach(item => {
+          if (entity === item.description) {
+          // if (entity === 'AbraxasMarket') {
+            newVal.id = item._id;
+            newVal.no_of_wallets = item.no_of_wallets;
+            newVal.address = item.address;
+          }
         })
 
+        return newVal;
       })
 
-      res.send(categoryArray);
-      // res.json(list)
-    });
-  });
+    })
+
+    res.send(categoryArray);
+    // res.json(list)
 })
 
 router.post('/search' , (req , res , next) => {
@@ -254,11 +286,15 @@ router.post('/search' , (req , res , next) => {
   MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
     if (err) return res.send(err);
     const dbo = db.db('frontend');
-    dbo.collection('data').find({ address:req.body.address }).toArray((error, data) => {
-      if (error) throw err;
-      if (data.length <= 0) {
-        return res.send({status: 'Waning', message: '搜索结果为空'});
-      }
+    let data  = datas_address[req.body.address];
+    if (!data) {
+      return res.send({status: 'Waning', message: '搜索结果为空'});
+    }
+    // dbo.collection('data').find({ address:req.body.address }).toArray((error, data) => {
+    //   if (error) throw err;
+      // if (data.length <= 0) {
+      //   return res.send({status: 'Waning', message: '搜索结果为空'});
+      // }
       dbo.collection('score').find().toArray((error, score) => {
         if (error) throw err;
         dbo.collection('name').find().toArray((error, name) => {
@@ -267,7 +303,7 @@ router.post('/search' , (req , res , next) => {
           db.close();
         });
       });
-    });
+    // });
   });
 })
 module.exports = router;

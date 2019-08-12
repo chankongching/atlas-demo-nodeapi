@@ -31,6 +31,8 @@ router.get('/aml', function (req, res, next) {
 });
 
 function mergeData({ data, score, name }, res) {
+  console.log('mergeData----------------');
+  console.log(data);
   let newData = {
     address: data[0].address,
     address_score_month: data[0].address_score_month,
@@ -129,7 +131,7 @@ function mergeData({ data, score, name }, res) {
     historyXAxis.push(data[0].input[x][1])
   }
   let newInput = JSON.parse(JSON.stringify(data[0].input));
-  newInput.splice(0, 4)
+  newInput.splice(0, 4);
   for (let i = 0; i < newInput[0].length; i++) {
     let arr = [];
     for (let index = 0; index < newInput.length; index++) {
@@ -162,7 +164,8 @@ router.get('/list' , (req , res , next) => {
       data.forEach((record) => {
         list.push({
           name: record.description,
-          id: record._id
+          id: record._id,
+          no_of_wallets: record.no_of_wallets
         })
       })
       res.json(list)
@@ -175,6 +178,9 @@ router.post('/record' , (req , res , next) => {
     const dbo = db.db('frontend');
     dbo.collection('data').find({ description:req.body.name }).toArray((error, data) => {
       if (error) throw err;
+      if (data.length <= 0) {
+        return res.send({status: 'Waning', message: '搜索结果为空'});
+      }
       dbo.collection('score').find().toArray((error, score) => {
         if (error) throw err;
         dbo.collection('name').find().toArray((error, name) => {
@@ -228,13 +234,37 @@ router.get('/category-list' , (req , res , next) => {
           return newVal;
         })
 
-
-
-
       })
 
       res.send(categoryArray);
       // res.json(list)
+    });
+  });
+})
+
+router.post('/search' , (req , res , next) => {
+  
+  if (req.body.address) {
+    console.log('接受到参数:', req.body);
+  } else {
+    return res.send({status: 'error', message: '缺少参数'});
+  }
+  MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
+    if (err) return res.send(err);
+    const dbo = db.db('frontend');
+    dbo.collection('data').find({ address:req.body.address }).toArray((error, data) => {
+      if (error) throw err;
+      if (data.length <= 0) {
+        return res.send({status: 'Waning', message: '搜索结果为空'});
+      }
+      dbo.collection('score').find().toArray((error, score) => {
+        if (error) throw err;
+        dbo.collection('name').find().toArray((error, name) => {
+          if (error) throw err;
+          mergeData({ data, score, name }, res);
+          db.close();
+        });
+      });
     });
   });
 })

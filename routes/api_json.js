@@ -62,7 +62,7 @@ router.get('/aml', function (req, res, next) {
     //   // console.log(data);
     //   console.log('collection data tabel!');
     //   if (error) throw err;
-    let data  = datas_name['Independent Wallet'];
+    let data  = datas_name['1133biLvFq3b9qSsHpAA9M15vhJYvw3iND'];
     // console.log('====================================')
     // console.log(data);
     if (!data) {

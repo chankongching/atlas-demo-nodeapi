@@ -211,7 +211,7 @@ router.get('/list' , (req , res , next) => {
 router.post('/record' , (req , res , next) => {
   let data  = datas_name[req.body.name];
   if (!data) {
-    return res.send({status: 'Waning', message: '搜索结果为空'});
+    return res.send({status: 'Waning', message: '搜索结果为空', code: 0});
   }
 
   MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
@@ -230,7 +230,7 @@ router.post('/record' , (req , res , next) => {
 router.get('/category-list' , (req , res , next) => {
   let data  = datas_array_list;
   if (!data) {
-    return res.send({status: 'Waning', message: '搜索结果为空'});
+    return res.send({status: 'Waning', message: '搜索结果为空', code: 0});
   }
   // dbo.collection('data').find().toArray((error, data) => {
     // if (error) throw err;
@@ -259,7 +259,7 @@ router.get('/category-list' , (req , res , next) => {
           entity: entity
         };
         data.forEach(item => {
-          if (entity === item.description) {
+          if (entity === item.address) {
           // if (entity === 'AbraxasMarket') {
             newVal.id = item._id;
             newVal.no_of_wallets = item.no_of_wallets;
@@ -281,14 +281,14 @@ router.post('/search' , (req , res , next) => {
   if (req.body.address) {
     console.log('接受到参数:', req.body);
   } else {
-    return res.send({status: 'error', message: '缺少参数'});
+    return res.send({status: 'error', message: '缺少参数', code: 0});
   }
   MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
     if (err) return res.send(err);
     const dbo = db.db('frontend');
     let data  = datas_address[req.body.address];
     if (!data) {
-      return res.send({status: 'Waning', message: '搜索结果为空'});
+      return res.send({status: 'Waning', message: '搜索结果为空', code: 0});
     }
     // dbo.collection('data').find({ address:req.body.address }).toArray((error, data) => {
     //   if (error) throw err;

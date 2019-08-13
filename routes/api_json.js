@@ -66,48 +66,52 @@ const colors = [
 
 const json1 = require('../data/data1.json');
 const json2 = require('../data/data2.json');
-const json3 = require('../data/data3.json');
-const json4 = require('../data/data4.json');
-const json5 = require('../data/data5.json');
-const json6 = require('../data/data6.json');
-const json7 = require('../data/data7.json');
-const json8 = require('../data/data8.json');
+// const json3 = require('../data/data3.json');
+// const json4 = require('../data/data4.json');
+// const json5 = require('../data/data5.json');
+// const json6 = require('../data/data6.json');
+// const json7 = require('../data/data7.json');
+// const json8 = require('../data/data8.json');
 
 
 const datas_address = {
   "1133biLvFq3b9qSsHpAA9M15vhJYvw3iND": json1,
-  "112xfbAbdKfyEnwZEv13JU6ibEHpJqZ3rB": json2,
-  "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF": json3,
-  "Huobi.com": json4,
-  "OKCoin.com": json5,
-  "AbraxasMarket": json6,
-  "BTC-e.com" : json7,
-  "Kraken.com" : json8
+  "112xfbAbdKfyEnwZEv13JU6ibEHpJqZ3rB": json2
+  // "112xfbAbdKfyEnwZEv13JU6ibEHpJqZ3rB": json2,
+  // "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF": json3,
+  // "Huobi.com": json4,
+  // "OKCoin.com": json5,
+  // "AbraxasMarket": json6,
+  // "BTC-e.com" : json7,
+  // "Kraken.com" : json8
 }
 
 const datas_id = {
   "5d41344ce86e60067efdb1d7": json1,
-  "5d41344ce86e60067efdb110": json2,
-  "5d41344ce86e60067efdb210": json3,
-  "5d41344ce8df60067efdb550": json4,
-  "5d41344ce8df60067efdb660": json5,
-  "5d41344ce8df60067efdb666": json6,
-  "5d41344ce8df60067efdb777" : json7,
-  "5d41344ce8df60067efdb888" : json8
+  "5d41344ce86e60067efdb110": json2
+  // "5d41344ce86e60067efdb110": json2,
+  // "5d41344ce86e60067efdb210": json3,
+  // "5d41344ce8df60067efdb550": json4,
+  // "5d41344ce8df60067efdb660": json5,
+  // "5d41344ce8df60067efdb666": json6,
+  // "5d41344ce8df60067efdb777" : json7,
+  // "5d41344ce8df60067efdb888" : json8
 }
 
 const datas_name = {
   "1133biLvFq3b9qSsHpAA9M15vhJYvw3iND": json1,
-  "112xfbAbdKfyEnwZEv13JU6ibEHpJqZ3rB": json2,
-  "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF": json3,
-  "Huobi.com": json4,
-  "OKCoin.com": json5,
-  "AbraxasMarket": json6,
-  "BTC-e.com" : json7,
-  "Kraken.com" : json8
+  "112xfbAbdKfyEnwZEv13JU6ibEHpJqZ3rB": json2
+  // "112xfbAbdKfyEnwZEv13JU6ibEHpJqZ3rB": json2,
+  // "1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF": json3,
+  // "Huobi.com": json4,
+  // "OKCoin.com": json5,
+  // "AbraxasMarket": json6,
+  // "BTC-e.com" : json7,
+  // "Kraken.com" : json8
 }
 
-const datas_array_list = [json1, json2, json3, json4, json5, json6, json7, json8];
+// const datas_array_list = [json1, json2, json3, json4, json5, json6, json7, json8];
+const datas_array_list = [json1, json2];
 
 /* GET API listing. */
 router.get('/aml', function (req, res, next) {
@@ -265,7 +269,7 @@ function mergeData({ data, score, name }, res) {
       data: arr
     });
   }
-  
+
   historyData.splice(0, 4)
   // console.log(historyData);
   newData.historyXAxis = historyXAxis;
@@ -322,7 +326,7 @@ router.get('/category-list' , (req , res , next) => {
         categoryList[item[1]].push(item[0]);
       }
     }
-    
+
     let categoryArray = [];
     for (const key in categoryList) {
       categoryArray.push({
@@ -356,7 +360,7 @@ router.get('/category-list' , (req , res , next) => {
 })
 
 router.post('/search' , (req , res , next) => {
-  
+
   if (req.body.address) {
     console.log('接受到参数:', req.body);
   } else {

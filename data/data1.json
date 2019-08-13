@@ -1,6 +1,6 @@
 {
     "_id" : "5d41344ce8df60067efdb111",
-    "address" : "1133biLvFq3b9qSsHpAA9M15vhJYvw3iND",
+      "address" : "1133biLvFq3b9qSsHpAA9M15vhJYvw3iND",
     "description" : "Independent Wallet",
     "no_of_wallets" : "1",
     "balance" : 0,
@@ -11,10 +11,10 @@
     "withdraws" : 274,
     "deposits" : 381,
     "addresses" : 56,
-    "risk_score_in" : 92,
-    "risk_score_out" : 87,
+    "risk_score_in" : -80,
+    "risk_score_out" : "N/A",
     "input" : [
-        [ 
+        [
             "112w4KnNn1Kutxm7dZcTcJK8bCfq9Ykmuj",
             1396326963,
             1374227626,
@@ -3643,18 +3643,18 @@
         0
     ],
     "address_score_series" : [
-        36,
-        56,
-        40,
-        60,
-        55,
-        58,
-        44,
-        87,
-        76,
-        58,
-        63,
-        78
+        -36,
+        -56,
+        -40,
+        -60,
+        -55,
+        -58,
+        -44,
+        -87,
+        -76,
+        -58,
+        -63,
+        -80
     ],
     "address_score_month" : [
         "Jan 2014",
